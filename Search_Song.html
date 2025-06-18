@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Song Lyrics Search</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input { width: 100%; margin-bottom: 10px; padding: 8px; box-sizing: border-box; }
+    .song { border-bottom: 1px solid #ccc; padding: 10px 0; }
+    .song-title { font-weight: bold; margin-bottom: 5px; }
+    .song-lyrics { white-space: pre-wrap; color: #555; }
+  </style>
+</head>
+<body>
+  <h2>Search Songs</h2>
+  <input type="text" id="searchInput" placeholder="Search by title or lyrics" />
+
+  <h3>Song List</h3>
+  <div id="songList"></div>
+
+  <script>
+    const storageKey = 'songs';
+    const songs = JSON.parse(localStorage.getItem(storageKey)) || [];
+    const searchInput = document.getElementById('searchInput');
+    const songListDiv = document.getElementById('songList');
+
+    function renderSongs() {
+      songListDiv.innerHTML = '';
+      const query = searchInput.value.trim().toLowerCase();
+      const filtered = songs.filter(song =>
+        song.title.toLowerCase().includes(query) ||
+        song.lyrics.toLowerCase().includes(query)
+      );
+      if (filtered.length === 0) {
+        songListDiv.innerHTML = '<p>No matches found.</p>';
+        return;
+      }
+      filtered.forEach(song => {
+        const div = document.createElement('div');
+        div.className = 'song';
+        div.innerHTML = `
+          <div class="song-title">${song.title}</div>
+          <div class="song-lyrics">${song.lyrics}</div>
+        `;
+        songListDiv.appendChild(div);
+      });
+    }
+
+    searchInput.addEventListener('input', renderSongs);
+
+    // initial render
+    renderSongs();
+  </script>
+</body>
+</html>

@@ -19,8 +19,8 @@
   <div id="songList"></div>
 
   <script>
-    const storageKey = 'songs';
-    const songs = JSON.parse(localStorage.getItem(storageKey)) || [];
+    // Load song list from static JSON file
+    let songs = [];
     const searchInput = document.getElementById('searchInput');
     const songListDiv = document.getElementById('songList');
 
@@ -48,8 +48,17 @@
 
     searchInput.addEventListener('input', renderSongs);
 
-    // initial render
-    renderSongs();
+    // Fetch songs.json from same GitHub Pages origin
+    fetch('songs.json')
+      .then(response => response.json())
+      .then(data => {
+        songs = data;
+        renderSongs();
+      })
+      .catch(error => {
+        console.error('Failed to load songs.json', error);
+        songListDiv.innerHTML = '<p>Error loading song list.</p>';
+      });
   </script>
 </body>
 </html>
